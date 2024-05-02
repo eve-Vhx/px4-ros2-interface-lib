@@ -115,6 +115,30 @@ public:
     }
   }
 
+  explicit NodeWithModeExecutor(std::string node_name, const std::string &topic_namespace_prefix, bool enable_debug_output = false)
+      : Node(node_name)
+  {
+    if (enable_debug_output)
+    {
+      auto ret =
+          rcutils_logging_set_logger_level(get_logger().get_name(), RCUTILS_LOG_SEVERITY_DEBUG);
+
+      if (ret != RCUTILS_RET_OK)
+      {
+        RCLCPP_ERROR(get_logger(), "Error setting severity: %s", rcutils_get_error_string().str);
+        rcutils_reset_error();
+      }
+    }
+
+    _mode = std::make_unique<ModeT>(*this, topic_namespace_prefix);
+    _mode_executor = std::make_unique<ModeExecutorT>(*this, *_mode, topic_namespace_prefix);
+
+    if (!_mode_executor->doRegister())
+    {
+      throw std::runtime_error("Registration failed");
+    }
+  }
+
   ModeT & getMode() const
   {
     return *_mode;
