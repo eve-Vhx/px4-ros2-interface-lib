@@ -94,7 +94,7 @@ void ModeExecutorBase::callOnDeactivate(DeactivateReason reason)
   _current_scheduled_mode.cancel();
   _current_wait_vehicle_status.cancel();
   _is_in_charge = false;
-  _was_never_activated = false;       // Set on deactivation, so we stay activated for the first time (while disarmed)
+  // _was_never_activated = false;       // Set on deactivation, so we stay activated for the first time (while disarmed)
   onDeactivate(reason);
 }
 
