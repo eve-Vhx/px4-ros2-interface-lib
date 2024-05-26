@@ -122,6 +122,7 @@ public:
   bool deferFailsafesSync(bool enabled, int timeout_s = 0);
 
 private:
+
   class ScheduledMode
   {
 public:
@@ -192,6 +193,7 @@ private:
   uint8_t _prev_failsafe_defer_state{px4_msgs::msg::VehicleStatus::FAILSAFE_DEFER_STATE_DISABLED};
 
   ConfigOverrides _config_overrides;
+  std::chrono::steady_clock::time_point last_log_time_;
 };
 
 /** @}*/
