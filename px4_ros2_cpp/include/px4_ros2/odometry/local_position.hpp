@@ -71,6 +71,18 @@ public:
     const px4_msgs::msg::VehicleLocalPosition & pos = last();
     return pos.heading;
   }
+
+  float distBottom() const
+  {
+    const px4_msgs::msg::VehicleLocalPosition & pos = last();
+    return pos.dist_bottom;
+  }
+
+  bool distBottomValid() const
+  {
+    const px4_msgs::msg::VehicleLocalPosition & pos = last();
+    return pos.dist_bottom_valid;
+  }
 };
 
 /** @}*/
