@@ -49,7 +49,8 @@ public:
     }
 
     const Eigen::Vector3f velocity{0.f, 1.f, 5.f};
-    _trajectory_setpoint->update(velocity);
+    const Eigen::Vector3f position{NAN, NAN, NAN};
+    _trajectory_setpoint->update(position, velocity);
   }
 
 private:

@@ -46,7 +46,8 @@ public:
 
     const float elapsed_s = (now - _activation_time).seconds();
     const Eigen::Vector3f velocity{10.f, elapsed_s * 2.f, -2.f};
-    _trajectory_setpoint->update(velocity);
+    const Eigen::Vector3f position{NAN, NAN, NAN};
+    _trajectory_setpoint->update(position, velocity);
   }
 
 private:

@@ -17,7 +17,8 @@ TrajectorySetpointType::TrajectorySetpointType(Context & context)
 }
 
 void TrajectorySetpointType::update(
-  const Eigen::Vector3f & velocity_ned_m_s,
+  const Eigen::Vector3f & position_ned_m,
+  const std::optional<Eigen::Vector3f> & velocity_ned_m_s,
   const std::optional<Eigen::Vector3f> & acceleration_ned_m_s2,
   std::optional<float> yaw_ned_rad,
   std::optional<float> yaw_rate_ned_rad_s)
@@ -27,10 +28,13 @@ void TrajectorySetpointType::update(
   px4_msgs::msg::TrajectorySetpoint sp{};
   sp.timestamp = _node.get_clock()->now().nanoseconds() / 1000;
 
-  sp.position[0] = sp.position[1] = sp.position[2] = NAN;
-  sp.velocity[0] = velocity_ned_m_s.x();
-  sp.velocity[1] = velocity_ned_m_s.y();
-  sp.velocity[2] = velocity_ned_m_s.z();
+  sp.position[0] = position_ned_m.x();
+  sp.position[1] = position_ned_m.y();
+  sp.position[2] = position_ned_m.z();
+  Eigen::Vector3f velocity = velocity_ned_m_s.value_or(Eigen::Vector3f{NAN, NAN, NAN});
+  sp.velocity[0] = velocity.x();
+  sp.velocity[1] = velocity.y();
+  sp.velocity[2] = velocity.z();
   Eigen::Vector3f acceleration = acceleration_ned_m_s2.value_or(Eigen::Vector3f{NAN, NAN, NAN});
   sp.acceleration[0] = acceleration.x();
   sp.acceleration[1] = acceleration.y();
