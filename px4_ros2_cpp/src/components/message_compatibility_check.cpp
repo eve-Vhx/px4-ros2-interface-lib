@@ -169,7 +169,7 @@ RequestMessageFormatReturn requestMessageFormat(
     }
 
     auto start_time = std::chrono::steady_clock::now();
-    auto timeout = 1000ms;
+    auto timeout = 2000ms;
 
     while (request_message_format_return == RequestMessageFormatReturn::Timeout) {
       auto now = std::chrono::steady_clock::now();
