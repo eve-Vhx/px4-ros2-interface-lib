@@ -16,13 +16,16 @@ namespace px4_ros2
 {
 
 ModeExecutorBase::ModeExecutorBase(
-  rclcpp::Node & node, const ModeExecutorBase::Settings & settings,
-  ModeBase & owned_mode, const std::string & topic_namespace_prefix)
-: _node(node), _topic_namespace_prefix(topic_namespace_prefix), _settings(settings), _owned_mode(
-    owned_mode),
+  rclcpp::Node & node, const Settings & settings, ModeBase & owned_mode,
+  const std::string & topic_namespace_prefix)
+: _node(node),
+  _topic_namespace_prefix(topic_namespace_prefix),
+  _settings(settings),
+  _owned_mode(owned_mode),
   _registration(std::make_shared<Registration>(node, topic_namespace_prefix)),
   _current_scheduled_mode(node, topic_namespace_prefix),
-  _config_overrides(node, topic_namespace_prefix)
+  _config_overrides(node, topic_namespace_prefix),
+  last_log_time_(std::chrono::steady_clock::now()) 
 {
   _vehicle_status_sub = _node.create_subscription<px4_msgs::msg::VehicleStatus>(
     topic_namespace_prefix + "/fmu/out/vehicle_status", rclcpp::QoS(1).best_effort(),
@@ -264,11 +267,17 @@ void ModeExecutorBase::waitReadyToArm(const CompletedCallback & on_completed)
     return;
   }
 
-  RCLCPP_DEBUG(_node.get_logger(), "Waiting until ready to arm...");
+  auto now = std::chrono::steady_clock::now();
+  if (now - last_log_time_ > 15s) {
+    RCLCPP_DEBUG(_node.get_logger(), "Waiting until ready to arm...");
+    last_log_time_ = now;
+  }
+
   _current_wait_vehicle_status.activate(
     [](const px4_msgs::msg::VehicleStatus::UniquePtr & msg) {return msg->pre_flight_checks_pass;},
     on_completed);
 }
+
 
 void ModeExecutorBase::waitUntilDisarmed(const CompletedCallback & on_completed)
 {
