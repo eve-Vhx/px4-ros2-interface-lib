@@ -80,6 +80,8 @@ void ModeExecutorBase::onRegistered()
   _config_overrides.setup(
     px4_msgs::msg::ConfigOverrides::SOURCE_TYPE_MODE_EXECUTOR,
     _registration->modeExecutorId());
+    RCLCPP_DEBUG(_node.get_logger(), "Runnung Prearm checks");
+    sendCommandSync(px4_msgs::msg::VehicleCommand::VEHICLE_CMD_RUN_PREARM_CHECKS);  //Added to regester vehicle_command_ack topic on PX4
 }
 
 void ModeExecutorBase::callOnActivate()
